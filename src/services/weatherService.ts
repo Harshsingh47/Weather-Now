@@ -8,7 +8,7 @@ const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 const GEO_URL = 'https://api.openweathermap.org/geo/1.0';
 const CACHE_TTL = 15 * 60 * 1000; // 15 minutes
 
-const getCacheKey = (type: string, lat: number, lon: number) => `${type}_${lat}_${lon}`;
+const getCacheKey = (type: string, lat: number, lon: number) => `v2_${type}_${lat}_${lon}`;
 
 interface CacheWrapper<T> {
   data: T;
@@ -104,8 +104,9 @@ export const weatherService = {
       const response = await axios.get(`${BASE_URL}/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`);
       const list = response.data.list;
 
-      const hourly: HourlyForecastData[] = list.slice(0, 8).map((item: any) => ({
+      const hourly: HourlyForecastData[] = list.map((item: any) => ({
         time: format(new Date(item.dt * 1000), 'h a'),
+        dateStr: format(new Date(item.dt * 1000), 'yyyy-MM-dd'),
         temperature: item.main.temp,
         condition: item.weather[0].main,
         icon: item.weather[0].icon,
@@ -117,10 +118,15 @@ export const weatherService = {
         if (!dailyMap.has(dateStr)) {
           dailyMap.set(dateStr, {
             date: dateStr,
+            rawDate: dateStr,
             minTemp: item.main.temp_min,
             maxTemp: item.main.temp_max,
             condition: item.weather[0].main,
             icon: item.weather[0].icon,
+            humidity: item.main.humidity,
+            windSpeed: item.wind.speed,
+            pressure: item.main.pressure,
+            visibility: item.visibility,
           });
         } else {
           const current = dailyMap.get(dateStr);

@@ -17,14 +17,20 @@ export interface WeatherData {
 
 export interface ForecastData {
   date: string;
+  rawDate: string;
   minTemp: number;
   maxTemp: number;
   condition: string;
   icon: string;
+  humidity: number;
+  windSpeed: number;
+  pressure: number;
+  visibility: number;
 }
 
 export interface HourlyForecastData {
   time: string;
+  dateStr: string;
   temperature: number;
   condition: string;
   icon: string;

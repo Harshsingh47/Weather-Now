@@ -10,9 +10,11 @@ import { useNavigate } from 'react-router-dom';
 export const Home: React.FC = () => {
   const { currentWeather, isLoading, error, currentLocation, fetchWeather, fetchWeatherByLocation } = useWeatherStore();
   const navigate = useNavigate();
+  const hasRequested = React.useRef(false);
 
   useEffect(() => {
-    if (!currentLocation && !isLoading && !currentWeather) {
+    if (!currentLocation && !isLoading && !currentWeather && !hasRequested.current) {
+      hasRequested.current = true;
       if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -21,8 +23,7 @@ export const Home: React.FC = () => {
           (err) => {
             console.warn('Geolocation denied or failed, defaulting to London', err);
             fetchWeather(51.5074, -0.1278); // Default London
-          },
-          { timeout: 5000 }
+          }
         );
       } else {
         fetchWeather(51.5074, -0.1278); // Default London
@@ -30,11 +31,11 @@ export const Home: React.FC = () => {
     }
   }, [currentLocation, isLoading, currentWeather, fetchWeather, fetchWeatherByLocation]);
 
-  if (isLoading && !currentWeather) {
+  if (!currentWeather && !error) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[60vh] text-white">
         <Loader2 className="animate-spin mb-4" size={48} />
-        <p className="text-lg">Fetching Weather...</p>
+        <p className="text-lg">Detecting Location & Weather...</p>
       </div>
     );
   }

@@ -57,7 +57,7 @@ export const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full max-w-md mx-auto mt-4">
+    <div className="relative w-full max-w-2xl mx-auto mt-4">
       <div className="relative flex items-center w-full h-12 rounded-2xl focus-within:shadow-lg bg-white/20 backdrop-blur-md overflow-hidden border border-white/30 text-white">
         <div className="grid place-items-center h-full w-12 text-white/80">
           <Search size={20} />

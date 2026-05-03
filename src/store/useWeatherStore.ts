@@ -7,10 +7,12 @@ interface WeatherState {
   currentWeather: WeatherData | null;
   hourlyForecast: HourlyForecastData[];
   dailyForecast: ForecastData[];
+  selectedDateIndex: number;
   isLoading: boolean;
   error: string | null;
   
   setCurrentLocation: (location: CitySuggestion) => void;
+  setSelectedDateIndex: (index: number) => void;
   fetchWeather: (lat: number, lon: number) => Promise<void>;
   fetchWeatherByCityName: (cityName: string) => Promise<void>;
   fetchWeatherByLocation: (lat: number, lon: number) => Promise<void>;
@@ -22,10 +24,12 @@ export const useWeatherStore = create<WeatherState>((set, get) => ({
   currentWeather: null,
   hourlyForecast: [],
   dailyForecast: [],
+  selectedDateIndex: 0,
   isLoading: false,
   error: null,
 
   setCurrentLocation: (location) => set({ currentLocation: location }),
+  setSelectedDateIndex: (index) => set({ selectedDateIndex: index }),
 
   fetchWeather: async (lat, lon) => {
     set({ isLoading: true, error: null });
@@ -39,6 +43,7 @@ export const useWeatherStore = create<WeatherState>((set, get) => ({
         currentWeather: current,
         hourlyForecast: forecast.hourly,
         dailyForecast: forecast.daily,
+        selectedDateIndex: 0,
         isLoading: false
       });
     } catch (error: any) {
